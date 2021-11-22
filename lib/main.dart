@@ -42,7 +42,17 @@ class _MyHomePageState extends State<MyHomePage> {
   final timeControllerList = <TimeData>[];
 
   @override
-  Future<Widget> build(BuildContext context) async{
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _createTimeDataList();
+
+  }
+
+
+
+  @override
+  Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         key: _key,
@@ -68,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
         body: Container(
           child: Column(
             children: <Widget>[
-              await _timeControllerArea(),
+              _timeControllerArea(),
               _taskControllerArea(),
               _bannerAdsArea(),
             ],
@@ -81,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
 //時間管理
-  Future<Widget> _timeControllerArea() async{
+  Widget _timeControllerArea() {
     return Container(
       height: 260,
       width: double.infinity,
@@ -96,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
               _dayChangedDropDownButton(),
             ],
           ),
-          await _timeSeriesChart(),
+          _timeSeriesChart(),
         ],
       ),
     );
@@ -165,12 +175,12 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   //グラフの表示
-  Future<Widget> _timeSeriesChart() async{
+  Widget _timeSeriesChart() {
     return Container(
       height: 200,
       width: double.infinity,
       child: charts.TimeSeriesChart(
-        await _createTimeData( _createTimeDataList()),
+        _createTimeData(timeControllerList),
       ),
     );
   }
@@ -178,12 +188,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 
-  Future<List<charts.Series<TimeData, DateTime>>> _createTimeData(
-      Future<List<TimeData>> timeControllerList) async{
+  List<charts.Series<TimeData, DateTime>> _createTimeData(
+      List<TimeData> timeControllerList) {
     return [
       charts.Series<TimeData, DateTime>(
         id: 'TimeController',
-        data: await timeControllerList,
+        data: timeControllerList,
         colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
         domainFn: (timeData,_) => timeData.day,
         measureFn: (timeData, _) => timeData.usePhone,
@@ -191,20 +201,23 @@ class _MyHomePageState extends State<MyHomePage> {
     ];
   }
 
-  Future <List<TimeData>> _createTimeDataList() async{
+  Future<void> _createTimeDataList() async{
     final SharedPreferences prefs =  await SharedPreferences.getInstance();
     String today = DateFormat('yyyy:MM:dd').format(DateTime.now()).toString();
     var now = DateTime.now();
     timeControllerList.add(TimeData(now,10));
+    setState(() {
 
-    switch (dropdownValue) {
-      case '月間':
-        break;
-      case '年間':
-        break;
-    }
+    });
 
-    return Future<List<TimeData>>.value(timeControllerList);
+    // switch (dropdownValue) {
+    //   case '月間':
+    //     break;
+    //   case '年間':
+    //     break;
+    // }
+
+    //return Future<List<TimeData>>.value(timeControllerList);
   }
 
   Widget _taskControllerArea() {
